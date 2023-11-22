@@ -15,7 +15,7 @@ class CartManager {
         return this.carts
     }
 
-    addCart(){
+    async addCart(){
         console.log(this.path)
         let cart = new Cart()
         if(this.carts.length== 0){
@@ -26,7 +26,7 @@ class CartManager {
         }
         
         this.carts.push(cart)
-        fs.writeFileSync(this.path,JSON.stringify(this.carts))
+        await fs.promises.writeFile(this.path,JSON.stringify(this.carts))
         return cart
 
     }
@@ -38,7 +38,7 @@ class CartManager {
 
     }
 
-    addProductToCart(cartId,productId){
+    async addProductToCart(cartId,productId){
         
         let cart_to_modify = this.carts[this.carts.findIndex(element => element.id == cartId)]
         if(!cart_to_modify){
@@ -51,7 +51,7 @@ class CartManager {
             cart_to_modify.products[cart_to_modify.products.findIndex(element => element.product == productId)].quantity +=1
         }
         this.carts[this.carts.findIndex(element => element.id == cartId)] = cart_to_modify
-        fs.writeFileSync(this.path,JSON.stringify(this.carts))
+        await fs.promises.writeFile(this.path,JSON.stringify(this.carts))
         return this.carts[this.carts.findIndex(element => element.id == cartId)]
 
     }
