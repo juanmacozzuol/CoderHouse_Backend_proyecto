@@ -39,7 +39,6 @@ router.post('/', async (req,res)=>{
     try{
         let producto = req.body
         const newProduct = await manager.addProduct(producto)
-        console.log(newProduct)
         if(newProduct?.error) {
 
             return res.status(404).json(newProduct.error)
@@ -56,7 +55,11 @@ router.post('/', async (req,res)=>{
 router.put('/:pid',async (req,res)=>{
     try{
         let productoModificado = req.body
-        res.send(await manager.updateProduct(Number(req.params.pid),productoModificado))
+        let modified = await manager.updateProduct(Number(req.params.pid),productoModificado)
+        if(modified?.error){
+            return res.status(404).json(modified.error)
+        }
+        res.status(201).json(modified)
     }
     catch(err){
         res.status(500).json({error:err})
@@ -65,9 +68,13 @@ router.put('/:pid',async (req,res)=>{
 
 router.delete('/:pid', async (req,res)=>{
     try{
-        res.send(await manager.deleteProduct(Number(req.params.pid)))
+        let deleted =await manager.deleteProduct(Number(req.params.pid))
+        if(deleted?.error){
+            return res.status(404).json(deleted.error)
+        }
+        res.status(201).json(deleted.message)
     }
-    catch(err){ console.log("Error:",err)}
+    catch(err){ res.status(500).json({error:err})}
     
 })
 export default router

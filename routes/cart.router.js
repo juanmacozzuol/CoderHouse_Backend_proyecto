@@ -9,22 +9,40 @@ const manager = new ProductManager('productos.json')
 const products = manager.getProducts()
 
 router.post('/',async (req,res)=>{
-    res.send( await cartManager.addCart())
+    try{
+        res.send( await cartManager.addCart())
+    }catch(err){
+        res.status(500).json({error:err})
+    }
+    
 })
 
 router.get('/:cid',(req,res)=>{
-    res.send(cartManager.getProducts(req.params.cid))    
+    try{
+        res.send(cartManager.getProducts(req.params.cid))
+    }catch(err){
+        res.status(500).json({error:err})
+    }
+        
 })
 
 router.post('/:cid/product/:pid', async (req,res)=>{
-   
-    const {cid,pid} = req.params
-    const checkProduct = manager.getProductById(Number(pid))
-    if (checkProduct === 'Not found'){
-        res.status(404).json({error:"Producto no presente en la base de datos"})
+
+    try{
+        const {cid,pid} = req.params
+        const checkProduct = manager.getProductById(Number(pid))
+        if (checkProduct === 'Not found'){
+          return  res.status(404).json({error:"Producto no presente en la base de datos"})
+        }
+        let addedProduct = await cartManager.addProductToCart(Number(cid),Number(pid))
+        if(addedProduct?.error){
+           return res.status(404).json(addedProduct.error)
+        }    
+            res.status(200).json(addedProduct)
+    }catch(err){
+        res.status(500).json({error:err})
+        
     }
-    res.send(await cartManager.addProductToCart(Number(cid),Number(pid)))
-   
 })
 
 

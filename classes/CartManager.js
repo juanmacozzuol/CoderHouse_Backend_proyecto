@@ -16,7 +16,7 @@ class CartManager {
     }
 
     async addCart(){
-        console.log(this.path)
+        
         let cart = new Cart()
         if(this.carts.length== 0){
             cart.id = 1;
@@ -33,7 +33,6 @@ class CartManager {
 
     getProducts(id){
         let cart = this.carts.find(element =>element.id == id)
-        console.log(cart)
         return cart.products
 
     }
@@ -42,7 +41,7 @@ class CartManager {
         
         let cart_to_modify = this.carts[this.carts.findIndex(element => element.id == cartId)]
         if(!cart_to_modify){
-            return "carrito inexistente"
+            return {error:"carrito inexistente"}
         }
         if(!cart_to_modify.products.find(element => element.product== productId)){
             cart_to_modify.products.push({"product":productId, "quantity":1})

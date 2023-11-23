@@ -73,7 +73,7 @@ class ProductManager {
             
 
             if(elementoPorId == undefined){
-                return "Not found"
+                return {error:"Not found"}
             }
             else{
                 let indicePorID = this.products.findIndex((element) => element.id == id)
@@ -96,7 +96,7 @@ class ProductManager {
             return {message:"Producto Eliminado."}
         }
         else{
-            return {message:"Not Found"}
+            return {error:"Not Found"}
         }
     }
 }
