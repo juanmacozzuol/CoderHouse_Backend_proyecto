@@ -6,20 +6,13 @@ const router = Router()
 
 router.get('/',async (req,res)=>{
     try{
-        console.log(req.query)
         const { limit,page,query,sort } = req.query
-    
-
         const productos = await ProductDao.getAllProducts(limit, page, query, sort);
-       
         
-        if(Number(limit)){
-            res.json(productos.slice(0,limit))
-
-        }
-        else{
+   
+   
             res.json(productos)
-        }
+        
     }
     catch(err){
         res.status(500).json({error:err})

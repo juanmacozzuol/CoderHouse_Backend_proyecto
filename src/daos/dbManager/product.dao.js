@@ -1,9 +1,13 @@
 import {productModel} from "../../models/product.model.js"
 
 class ProductDao {
-    async getAllProducts(limit = 10, page = 1, query, sort ){
-        console.log(limit,page,query,sort)
-        return await productModel.find()
+    async getAllProducts(limit = 10 , page = 1, query, sort ){
+        let consulta = {}
+        if (query != undefined){
+            consulta[query.split(":")[0]] = query.split(":")[1]
+        }
+        return await productModel.paginate(consulta,{limit:limit,page:page,sort:sort == undefined ? {}: {price:Number(sort)}})
+            
     }
 
     async getProductById(id){
