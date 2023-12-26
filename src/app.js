@@ -1,10 +1,21 @@
 import express from 'express'
-import productRouter from '../routes/product.router.js'
-import cartRouter from '../routes/cart.router.js'
+import __dirname from '../dirname.js'
+import handlebars from 'express-handlebars'
+import mongoose from 'mongoose'
+import productRouter from './routes/product.router.js'
+import cartRouter from './routes/cart.router.js'
 
 
 const app = express()
 const port = 8080
+
+app.engine('hbs', handlebars.engine({
+    extname: ".hbs",
+    defaultLayout: "main",
+  }))
+app.set('views',__dirname+'/views')
+app.set('view engine','hbs')
+app.use(express.static(__dirname+'/public'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -17,3 +28,8 @@ app.use('/api/carts',cartRouter)
 app.listen(port,() => {
     console.log("Server listening in port: " + port)
 })
+
+mongoose
+    .connect('mongodb://127.0.0.1:27017/segunda_entrega')
+    .then( db => console.log(`-> sucessfuly connected to database.`) )
+    .catch( err => console.error(`-> can't connect to database due to following error: ${err}.`) )
