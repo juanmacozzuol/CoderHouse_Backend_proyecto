@@ -56,12 +56,14 @@ export const register = async (req,res)=>{
         return res.status(400).send({status:'error', msg:'Usuario ya existe!'})
     
     }
+    const cart = await cartService.createCart()
     const user = {
         first_name,
         last_name,
         email,
         age,
-        password: createHash(password)
+        password: createHash(password),
+        cart:cart._id.toString()
     }
     const result = await userModel.create(user)
     res.send({status:"success", msg:"Usuario creado con exito con ID: " + result.id})
@@ -70,7 +72,6 @@ export const register = async (req,res)=>{
 export const login = async (req,res) => {
     const {email, password} = req.body
     const user = await userModel.findOne({email})  
-    const cart = await cartService.createCart()
       let rol;
       if(!user) return res.status(401).send({status:"Error", error:"Incorrect credentials"})
       if(email == "adminCoder@coder.com" && password == "adminCod3r123"){
@@ -80,14 +81,14 @@ export const login = async (req,res) => {
           rol = "user"
       }
       if(!isValidPassword(user,password)) return res.status(403).send({status:"error", msg:'Invalid Credentials'})
-      req.session.user = {
+        req.session.user = {
           name: user.first_name ,
           last_name: user.last_name,
           email: user.email,
           age: user.age,
           rol: rol,
-          cart:cart._id.toString()
-      }
-      const rol_user = await userModel.findOneAndUpdate({email},{rol:rol,cart:cart._id})
+          cart:user.cart
+        }
+      const rol_user = await userModel.findOneAndUpdate({email},{rol:rol})
       res.send({status:'success', payload: req.session.user, message:'Logueo exitoso'})
   }

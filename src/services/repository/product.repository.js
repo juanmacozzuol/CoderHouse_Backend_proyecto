@@ -3,8 +3,8 @@ export default class ProductRepository{
         this.dao = dao
     }
 
-    getAllProducts = () =>{
-        return this.dao.getAllProducts()
+    getAllProducts = (limit, page, query, sort) =>{
+        return this.dao.getAllProducts(limit, page, query, sort)
     }
 
     getProductById = (id) =>{

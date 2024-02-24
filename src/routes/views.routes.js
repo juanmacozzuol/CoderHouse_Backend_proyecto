@@ -5,7 +5,7 @@ const router = Router()
 router.get('/',async (req,res)=>{
     const { limit,page,query,sort } = req.query
     const productos = await productService.getAllProducts(limit, page, query, sort);
-    console.log(productos)
+
     res.render("products",{productos, user:req.session.user})
 })
 

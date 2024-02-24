@@ -1,7 +1,7 @@
 
 
-import { productService,cartService } from "../services/services.js"
-
+import { productService,cartService, ticketService } from "../services/services.js"
+import TicketDto from "../services/DTOs/ticket.dto.js"
 
 export const getAllCarts = async (req,res)=>{
     try{
@@ -65,7 +65,7 @@ export const addProductToCart = async (req,res)=>{
     }
 }
 
-export const addBatchProcuts = async (req,res)=>{
+export const addBatchProducts = async (req,res)=>{
     if(req.session.user.rol === 'user'){
         let cart = await cartService.getCartById(req.params.cid)
         let products = req.body
@@ -122,4 +122,37 @@ export const emptyCart = async (req,res)=>{
     }
     catch(err){ res.status(500).json({error:err})}
     
+}
+
+export const finishPurchase = async (req,res) =>{
+        console.log(req.params.cid)
+        let cart = await cartService.getCartById(req.params.cid)
+        let total_price = 0;
+        let unstocked_products = []
+        console.log(cart.products)
+        for( const item of cart.products){
+            let product = await productService.getProductById(item.product)
+            if(product.stock >= item.quantity){
+
+                total_price += item.quantity * product.price
+                let stockLoweing = await productService.updateProduct(item.product,{stock:product.stock - item.quantity})
+                
+            }
+            else{
+                unstocked_products.push({product:product._id,quantity:item.quantity})
+            }
+            
+
+        }
+
+        if(total_price > 0){
+
+        cart.products = unstocked_products
+        let newCart = await cartService.updateProducts(req.params.cid,cart)
+        let newTicket = await ticketService.createTicket({code:`${req.params.cid}_${Date.now()}`,amount:total_price,purchaser:req.session.user.email})
+        return res.status(200).json(new TicketDto(newTicket))
+        } 
+        else{
+            return res.status(404).json({message:"No se realizó ninguna compra"})
+        }
 }

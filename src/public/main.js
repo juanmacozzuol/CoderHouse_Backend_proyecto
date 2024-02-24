@@ -1,7 +1,8 @@
 
 
 var cart = cart
-
+const logoutButton = document.getElementById("logout")
+const finishPurchase = document.getElementById("finish")
 async function addItem(index){
 
     let data = await  fetch('/api/products')
@@ -10,13 +11,11 @@ async function addItem(index){
     let cargar = await fetch(`/api/carts/${cart}/product/${productos.docs[index]._id}`,{method:"POST"})
 }
 
-const logoutButton = document.getElementById("logout")
+
 
 
 logoutButton.addEventListener('click',e =>{
     
-    
-
     fetch('/api/sessions/logout',{
         method:"GET",
         headers:{
@@ -25,4 +24,9 @@ logoutButton.addEventListener('click',e =>{
     }).then(result =>{
         
         if(result.status === 200) window.location.replace('/users/login')})
+})
+
+finishPurchase.addEventListener('click',e=>{
+    window.location.replace(`/api/carts/${cart}/purchase`)
+
 })
