@@ -1,20 +1,29 @@
 import {Router} from 'express'
-import ProductDao from '../daos/dbManager/product.dao.js'
-import CartDao from '../daos/dbManager/cart.dao.js'
+import { productService, cartService } from '../services/services.js'
 const router = Router()
 
 router.get('/',async (req,res)=>{
     const { limit,page,query,sort } = req.query
-    const productos = await ProductDao.getAllProducts(limit, page, query, sort);
-
-    res.render("products",{productos})
+    const productos = await productService.getAllProducts(limit, page, query, sort);
+    console.log(productos)
+    res.render("products",{productos, user:req.session.user})
 })
 
 router.get('/carts/:cid',async (req,res)=>{
     const {cid} = req.params
-    const productos = await CartDao.getProductsFromCart(cid)
+    const productos = await cartService.getProductsFromCart(cid)
     console.log(productos)
     res.render("cart",{productos})
 })
+
+router.get('/chat',(req,res)=>{
+    if(req.session.user.rol === 'user'){
+    res.render('chat',{})
+    }
+    else{
+        res.render('denied')
+    }
+})
+
 export default router
 
