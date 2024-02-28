@@ -14,5 +14,7 @@ export default{
     urlMongo: process.env.MONGO_URL,
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    sessionSecret: process.env.SESSION_SECRET
+    sessionSecret: process.env.SESSION_SECRET,
+    mail: process.env.GMAIL_ACCOUNT,
+    mailPassword: process.env.GMAIL_PASSWORD
 }

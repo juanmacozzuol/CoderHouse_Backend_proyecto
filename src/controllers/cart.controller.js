@@ -2,6 +2,7 @@
 
 import { productService,cartService, ticketService } from "../services/services.js"
 import TicketDto from "../services/DTOs/ticket.dto.js"
+import { sendMail } from "../utils/nodeMailer.js"
 
 export const getAllCarts = async (req,res)=>{
     try{
@@ -125,11 +126,9 @@ export const emptyCart = async (req,res)=>{
 }
 
 export const finishPurchase = async (req,res) =>{
-        console.log(req.params.cid)
         let cart = await cartService.getCartById(req.params.cid)
         let total_price = 0;
         let unstocked_products = []
-        console.log(cart.products)
         for( const item of cart.products){
             let product = await productService.getProductById(item.product)
             if(product.stock >= item.quantity){
@@ -150,6 +149,7 @@ export const finishPurchase = async (req,res) =>{
         cart.products = unstocked_products
         let newCart = await cartService.updateProducts(req.params.cid,cart)
         let newTicket = await ticketService.createTicket({code:`${req.params.cid}_${Date.now()}`,amount:total_price,purchaser:req.session.user.email})
+        await sendMail(req.session.user.email, newTicket )
         return res.status(200).json(new TicketDto(newTicket))
         } 
         else{
