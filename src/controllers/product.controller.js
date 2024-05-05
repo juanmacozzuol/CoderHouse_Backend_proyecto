@@ -1,4 +1,4 @@
-import { productService } from "../services/services.js";
+import { productService, cartService, userService } from "../services/services.js";
 
 
 
@@ -68,13 +68,15 @@ export const updateProduct = async (req,res)=>{
 }
 
 export const deleteProduct = async (req,res)=>{
+    console.log(req.params.pid)
     try{
         if(req.session.user.rol === 'admin'){
+
             let deleted =await productService.deleteProduct(req.params.pid)
             res.status(201).json(deleted.message)
         }
         else{
-            res.status(401).json({message:"Acceso denegado"})
+           res.status(401).json({message:"Acceso denegado"})
         }
     }
     catch(err){ res.status(500).json({error:err})}

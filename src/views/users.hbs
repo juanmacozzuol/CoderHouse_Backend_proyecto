@@ -1,0 +1,39 @@
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col"> Nombre </th>
+        <th scope="col"> Apellido </th>
+        <th scope="col"> Edad </th>
+        <th scope="col"> Rol </th>
+        <th scope ="col"> Nuevo Rol</th>
+
+
+      </tr>
+    </thead>
+    <tbody>
+      {{#each users}}
+        <tr>
+            <td> {{this.first_name}}</td>
+            <td> {{this.last_name}}</td>
+            <td> {{this.age}}</td>
+            <td> {{this.rol}}</td>
+            <td>
+              <select name="" id="role{{@index}}" >
+                <option value="user">User</option>
+                <option value="premium">Premium</option>
+                <option value="admin">Admin</option>
+              </select>
+            </td>
+            <td><button onClick=changeRol({{@index}})> Cambiar Rol</button></td>
+        </tr>
+      {{/each}}
+
+    </tbody>
+
+
+</div>
+  <script src="/main.js">
+
+
+  </script>

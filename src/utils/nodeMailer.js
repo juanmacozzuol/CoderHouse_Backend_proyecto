@@ -26,3 +26,19 @@ export const sendMail = async (email, ticket) =>{
 
     })
 }
+
+
+export const sendDeletedUserMail = async (email) =>{
+    console.log(email)
+    let result = await transport.sendMail({
+        from: 'Compras <juanmacozzuol@gmail.com>',
+        to: email,
+        subject: "Cuenta Eliminada",
+        html: `<div> 
+            <h1>Se eliminó su cuenta por falta de uso.</h1>
+        </div>`
+
+
+
+    })
+}

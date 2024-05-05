@@ -9,6 +9,7 @@ import cartRouter from './routes/cart.router.js'
 import viewsRouter from './routes/views.routes.js'
 import sessionsRouter from './routes/sessions.router.js'
 import usersViewsRouter from './routes/users.views.router.js'
+import usersRouter from './routes/user.router.js'
 import Handlebars from "handlebars";
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
@@ -66,6 +67,7 @@ app.use('/users',usersViewsRouter)
 // })
 app.use('/api/products',productRouter)
 app.use('/api/carts',cartRouter)
+app.use('/api/users', usersRouter)
 app.use('/',viewsRouter)
 
 const httpServer = app.listen(port, ()=>{console.log("Listening on port " + port)})

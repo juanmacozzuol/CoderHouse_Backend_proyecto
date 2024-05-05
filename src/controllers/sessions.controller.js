@@ -63,7 +63,8 @@ export const register = async (req,res)=>{
         email,
         age,
         password: createHash(password),
-        cart:cart._id.toString()
+        cart:cart._id.toString(),
+        lastConnection : Date.now()
     }
     const result = await userModel.create(user)
     res.send({status:"success", msg:"Usuario creado con exito con ID: " + result.id})
@@ -73,6 +74,7 @@ export const login = async (req,res) => {
     const {email, password} = req.body
     const user = await userModel.findOne({email})  
       let rol;
+      let time = Date.now()
       if(!user) return res.status(401).send({status:"Error", error:"Incorrect credentials"})
       if(email == "adminCoder@coder.com" && password == "adminCod3r123"){
           rol = 'admin'
@@ -89,6 +91,6 @@ export const login = async (req,res) => {
           rol: rol,
           cart:user.cart
         }
-      const rol_user = await userModel.findOneAndUpdate({email},{rol:rol})
+      const rol_user = await userModel.findOneAndUpdate({email},{rol:rol},{lastConnection:time})
       res.send({status:'success', payload: req.session.user, message:'Logueo exitoso'})
   }

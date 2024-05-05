@@ -12,7 +12,9 @@ const userSchema = new mongoose.Schema({
     age: Number,
     password:String,
     rol: String,
-    cart: {type: mongoose.Schema.Types.ObjectId}
+    cart: {type: mongoose.Schema.Types.ObjectId},
+    lastConnection: Number
+
 })
 
 const userModel = mongoose.model(collection, userSchema)
